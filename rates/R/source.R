@@ -1,7 +1,7 @@
 library(MASS)
 library(TMB)
 library(data.table)
-dyn.load(dynlib(paste0(system.file("./rates/src/TMB",package="rates"),"/tau2f")))
+#dyn.load(dynlib(paste0(system.file("./rates/src/TMB",package="rates"),"/tau2f")))
 #' Fit the RATES model.
 #' @param betajk MxK matrix of effect size estimates, where row j corresponds to j-th SNP, and column k corresponds to k-th study .  Missing values can be represented with NA.
 #' @param sjk2 MxK matrix of effect size estimate variances, where row j corresponds to SNP j, and column k corresponds to study k.  Missing values can be represented with NA.
