@@ -1,6 +1,6 @@
-library(MASS)
-library(TMB)
-library(data.table)
+# library(MASS)
+# library(TMB)
+# library(data.table)
 #dyn.load(dynlib(paste0(system.file("./rates/src/TMB",package="rates"),"/tau2f")))
 #' Fit the RATES model.
 #' @param betajk MxK matrix of effect size estimates, where row j corresponds to j-th SNP, and column k corresponds to k-th study .  Missing values can be represented with NA.
@@ -95,7 +95,7 @@ rates.fit<-function(
     ## E-step start
     # calculate Ojk.p matrix
     Ojk.p<-lapply(1:MM,function(j){
-      rates::deltis(betajk_j = betajk[j,],sdjk2_j = sjk2[j,],lambda = lambda,alpha = alpha)
+      rates:::deltis(betajk_j = betajk[j,],sdjk2_j = sjk2[j,],lambda = lambda,alpha = alpha)
     })
     Ojk.p<-matrix(unlist(Ojk.p),nrow = MM,byrow = TRUE)
     missingdelta<-unlist(lapply(1:MM, function(j){ 
@@ -109,17 +109,17 @@ rates.fit<-function(
     #Calculate Rj.p vector
     if(iter==1){
       llbR0<-unlist(lapply(1:nrow(betajk), function(j){
-        rates::bjR0(betajk_j = betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],alpha = alpha,lambda = lambda)
+        rates:::bjR0(betajk_j = betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],alpha = alpha,lambda = lambda)
       }))
       
       llbR1<-unlist(lapply(1:nrow(betajk),function(j){
-        rates::bjR1(betajk_j = betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],zkl =as.matrix(PC[mis.inds[[j]],]),tau2 = tau2)
+        rates:::bjR1(betajk_j = betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],zkl =as.matrix(PC[mis.inds[[j]],]),tau2 = tau2)
       }))
     }
     #print(nrow(betajk))
     Rj.p<- unlist(lapply(1:nrow(betajk),function(j){
       #print(p)
-      Rj_j<-p*exp(llbR1[j])/exp(rates::logsumexp(c(log(p)+llbR1[j],log(1-p)+llbR0[j])))
+      Rj_j<-p*exp(llbR1[j])/exp(rates:::logsumexp(c(log(p)+llbR1[j],log(1-p)+llbR0[j])))
       if(is.na(Rj_j)){
         m<-which.max(c(log(1-p)+llbR0[j],log(p)+llbR1[j]))
         Rj_j<-(m-1)
@@ -167,14 +167,14 @@ rates.fit<-function(
     ######finished review above######
     get.ll<-function(betajk,sjk2,PC,p,lambda,alpha,tau2,mis.inds){
       llbR0<-unlist(lapply(1:nrow(betajk), function(j){
-        rates::bjR0(betajk_j =  betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],alpha = alpha,lambda=lambda)
+        rates:::bjR0(betajk_j =  betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],alpha = alpha,lambda=lambda)
       }))
       
       llbR1<-unlist(lapply(1:nrow(betajk),function(j){
-        rates::bjR1(betajk_j =  betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],zkl = as.matrix(PC[mis.inds[[j]],]),tau2 = tau2)
+        rates:::bjR1(betajk_j =  betajk[j,mis.inds[[j]]],sdjk2_j = sjk2[j,mis.inds[[j]]],zkl = as.matrix(PC[mis.inds[[j]],]),tau2 = tau2)
       }))
       ll<-sum(unlist(lapply(1:nrow(betajk),function(j){
-        rates::logsumexp(c(log(p)+llbR1[j],log(1-p)+llbR0[j]))
+        rates:::logsumexp(c(log(p)+llbR1[j],log(1-p)+llbR0[j]))
       })))
       return(list(ll=ll,llbR0=llbR0,llbR1=llbR1))
     }
@@ -366,7 +366,7 @@ rates.getnullscore<-function(mod,sjk2,total_null_scores,out.prefix,
   nullMod<-list()
   for (i in 1:nModels){
     gData<-rates.generative(mod =mod,sjk2 = sjk2,Mnull = nullSNPsPerModel)
-    nullMod[[i]]<-rates::rates.fit(betajk = gData$betajk,sjk2 = gData$sjk2_sample,PC = mod$PC,
+    nullMod[[i]]<-rates:::rates.fit(betajk = gData$betajk,sjk2 = gData$sjk2_sample,PC = mod$PC,
                                    p =mod$p,lambda =mod$lambda ,alpha =mod$alpha ,tau2 = mod$tau2,verbose=0)
     ppr_i<-nullMod[[i]]$ppr
     nullscore_i<-ppr_i[gData$Rj==0]

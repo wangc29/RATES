@@ -3,4 +3,8 @@
 export(rates.fit)
 export(rates.generative)
 export(rates.getnullscore)
+import(MASS)
+import(Rcpp)
+import(TMB)
+import(data.table)
 useDynLib(rates); useDynLib(tau2f)
