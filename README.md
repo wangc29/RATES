@@ -222,7 +222,7 @@ raw_PC = cmdscale(dist_mt,k = 3)
 PC<-cbind(1,raw_PC)
 ```
 
-Finally, lets run RATES to for replicability assessment for those signals identified from trans-ancestry GWAMA.
+Finally, lets run RATES for replicability assessment for those signals identified from trans-ancestry GWAMA.
 ```{r}
 library(rates)
 res<-rates.fit(betajk = beta.retained[,-1],sjk2 = (sd.retained[,-1])^2,PC = PC1,SNP = beta.retained[,1])
