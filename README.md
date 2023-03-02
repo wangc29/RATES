@@ -8,6 +8,10 @@ RATES
 
 RATES is designed to assess repliabilty of association signals from trans-ancestry GWAS meta-analysis by calculating a posterior probability of replicability for each analyzed variant.
 
+RATES is tested on R 3.6+ for Linux and macOS systems and depends on the following packages: Rcpp,RcppEigen,TMB,MASS,data.table.
+
+RATES can be installed from our github repo by utilizing the devtools library. Installation only takes a few minutes.
+
 Installation
 ------------
 
@@ -227,7 +231,7 @@ Finally, lets run RATES for replicability assessment for those signals identifie
 library(rates)
 res<-rates.fit(betajk = beta.retained[,-1],sjk2 = (sd.retained[,-1])^2,PC = PC1,SNP = beta.retained[,1])
 ```
-After fitting the model, we can obtain the Posterior Probability of Replicability estimate for all jointly analyzed variants. 
+After fitting the model, we can obtain the Posterior Probability of Replicability estimate for all jointly analyzed variants. Running time of RATES for thissmall demo dataset is less than one minute on a one processor Intel Xeon E5-2650v4 2.2GHz CPU machine with 24Gb memory.
 
 ```{r}
 res.dt= as.data.frame(list(SNP=res$SNP,PPR=res$ppr),stringsAsFactors = F)
